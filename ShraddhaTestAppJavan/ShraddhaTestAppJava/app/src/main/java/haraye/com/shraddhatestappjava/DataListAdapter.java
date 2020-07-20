@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -109,7 +110,10 @@ public class DataListAdapter extends RecyclerView.Adapter<DataListAdapter.DataVi
     }
 
     void setData(List<DataModel> dataModels) {
-        mDataModels = dataModels;
+        if(mDataModels == null)
+            mDataModels = new ArrayList<>();
+        mDataModels.clear();
+        mDataModels.addAll(dataModels);
         notifyDataSetChanged();
     }
 

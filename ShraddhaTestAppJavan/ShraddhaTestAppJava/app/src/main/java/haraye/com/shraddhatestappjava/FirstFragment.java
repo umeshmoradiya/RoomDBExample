@@ -7,6 +7,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -123,16 +124,18 @@ public class FirstFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
         refreshData();
-
     }
 
     private void refreshData() {
-        AsyncTask.execute(() -> {
-            List<DataModel> data = viewModel.getAllData();
-            getActivity().runOnUiThread(() -> adapter.setData(data));
+        new Handler().postDelayed(()->{
+            AsyncTask.execute(() -> {
+                List<DataModel> data = viewModel.getAllData();
+                Log.e("FirstFragment", "refreshData");
+                getActivity().runOnUiThread(() -> adapter.setData(data));
 
-        });
+            });
+        }, 1000);
+
     }
 }
