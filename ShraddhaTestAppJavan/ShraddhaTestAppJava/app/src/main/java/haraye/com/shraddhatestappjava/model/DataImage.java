@@ -5,12 +5,12 @@ import android.net.Uri;
 public class DataImage {
     private String name = null;
     private Uri imageUri = null;
-    private Boolean saved = false;
+    private Boolean isSaved = false;
 
     public DataImage(String name, Uri uri, Boolean isSaved){
         this.name = name;
         this.imageUri = uri;
-        this.saved = isSaved;
+        this.isSaved = isSaved;
     }
 
     public String getName() {
@@ -29,11 +29,11 @@ public class DataImage {
         this.imageUri = imageUri;
     }
 
-    public Boolean getSaved() {
-        return saved;
+    public Boolean isSaved() {
+        return isSaved;
     }
 
-    public void setSaved(Boolean saved) {
-        this.saved = saved;
+    public void isSaved(Boolean saved) {
+        isSaved = saved;
     }
 }

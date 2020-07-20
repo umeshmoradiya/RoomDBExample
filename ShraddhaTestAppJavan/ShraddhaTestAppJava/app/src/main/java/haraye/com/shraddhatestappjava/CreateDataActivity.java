@@ -67,7 +67,6 @@ public class CreateDataActivity extends AppCompatActivity {
     boolean isPressed=false;
 
     Uri image_uri;
-    List<Uri> image_uris;
     DataModel dataModel;
     AttachmentModel attachmentModel;
     ImageAdapter imageAdapter = null;
@@ -240,7 +239,7 @@ public class CreateDataActivity extends AppCompatActivity {
                         mEditDescription.setText(data.get(0).description);
                         try {
                             List<DataImage> tempImages = new ArrayList<>();
-                            Log.e("UPDATE", ""+data.get(0).image.size());
+
                             for(String imagePath : data.get(0).image){
 
                                 File imgFile = new File(imagePath);
@@ -301,7 +300,7 @@ public class CreateDataActivity extends AppCompatActivity {
             //Log.e("Image Path:", "" + image_uri);
             if (!title.isEmpty()) {
                 if (curerntOperation == OPERATION.CREATE) {
-                    if (image_uris != null && AudioSavePathInDevice != null) {
+                    if (imageAdapter.getAllImages() != null && AudioSavePathInDevice != null) {
 
                         String audioPath = AudioSavePathInDevice;
                         DataModel dataModel = new DataModel();
@@ -313,9 +312,9 @@ public class CreateDataActivity extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(long id) {
 
-                                    for(Uri image_uri: image_uris) {
-
-                                        String filePath = saveImage(uriToBitmap(image_uri));
+                                    for(DataImage dataImage: imageAdapter.getAllImages()) {
+                                        if(!dataImage.isSaved()){
+                                        String filePath = saveImage(uriToBitmap(dataImage.getImageUri()));
                                         Log.e("Image File Path:", "" + filePath);
 
                                         AttachmentModel attachmentModel = new AttachmentModel();
@@ -323,6 +322,7 @@ public class CreateDataActivity extends AppCompatActivity {
                                         attachmentModel.type = "image";
                                         attachmentModel.data_model_id = id;
                                         viewModel.insert(attachmentModel);
+                                        }
                                     }
                                     
                                     AttachmentModel attachmentModel1 = new AttachmentModel();
@@ -342,26 +342,33 @@ public class CreateDataActivity extends AppCompatActivity {
 
                 }
 
-               /* if (curerntOperation == OPERATION.UPDATE && dataModel != null) {
+                if (curerntOperation == OPERATION.UPDATE && dataModel != null) {
 
                     dataModel.title = title;
                     dataModel.description = mEditDescription.getText().toString();
 
-                    if (image_uri != null) {
-                        String filePath = saveImage(uriToBitmap(image_uri));
-                        Log.e("Image File Path:", "" + filePath);
-                        dataModel.image = filePath;
+                    for(DataImage dataImage: imageAdapter.getAllImages()) {
+                        if(!dataImage.isSaved()){
+                            String filePath = saveImage(uriToBitmap(dataImage.getImageUri()));
+                            Log.e("Image File Path:", "" + filePath);
+
+                            AttachmentModel attachmentModel = new AttachmentModel();
+                            attachmentModel.source = filePath;
+                            attachmentModel.type = "image";
+                            attachmentModel.data_model_id = dataModel.dataid;
+                            viewModel.insert(attachmentModel);
+                        }
                     }
 
-                    if (AudioSavePathInDevice != null) {
-                        String audioPath = AudioSavePathInDevice;
-                        Log.e("Audio File Path:", "" + audioPath);
-                        dataModel.audio = audioPath;
-                    }
+                    /*AttachmentModel attachmentModel1 = new AttachmentModel();
+                    attachmentModel1.source = audioPath;
+                    attachmentModel1.type = "audio";
+                    attachmentModel1.data_model_id = id;
+                    viewModel.insert(attachmentModel1);*/
 
                     viewModel.update(dataModel);
                     finish();
-                }*/
+                }
             } else {
                 mEditTitle.setError("Required!");
             }
@@ -376,9 +383,6 @@ public class CreateDataActivity extends AppCompatActivity {
         Uri image_uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
         Log.e("Image Path:", "" + image_uri);
         this.image_uri = image_uri;
-        if (image_uris == null)
-            image_uris = new ArrayList<>();
-        image_uris.add(image_uri);
 
         //Camera intent
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);

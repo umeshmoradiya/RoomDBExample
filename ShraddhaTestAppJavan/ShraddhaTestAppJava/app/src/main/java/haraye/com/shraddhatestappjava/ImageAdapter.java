@@ -64,4 +64,8 @@ public class ImageAdapter extends BaseAdapter {
         dataImages.addAll(dataImagess);
         notifyDataSetChanged();
     }
+
+    public List<DataImage> getAllImages(){
+        return this.dataImages;
+    }
 }
