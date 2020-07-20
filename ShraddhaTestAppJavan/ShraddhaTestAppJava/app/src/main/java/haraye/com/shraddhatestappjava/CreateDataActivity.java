@@ -5,7 +5,6 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.ImageDecoder;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
@@ -17,7 +16,6 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -226,7 +224,7 @@ public class CreateDataActivity extends AppCompatActivity {
 
 
 
-        /*if (getIntent() != null && getIntent().getExtras() != null && getIntent().getExtras().containsKey("DATA_ID")) {
+        if (getIntent() != null && getIntent().getExtras() != null && getIntent().getExtras().containsKey("DATA_ID")) {
 
             curerntOperation = OPERATION.UPDATE;
 
@@ -241,19 +239,25 @@ public class CreateDataActivity extends AppCompatActivity {
                         mEditTitle.setText(data.get(0).title);
                         mEditDescription.setText(data.get(0).description);
                         try {
-                            File imgFile = new File(data.get(0).image);
+                            List<DataImage> tempImages = new ArrayList<>();
+                            Log.e("UPDATE", ""+data.get(0).image.size());
+                            for(String imagePath : data.get(0).image){
 
-                            if (imgFile.exists()) {
+                                File imgFile = new File(imagePath);
 
-                                Bitmap bitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-                                mImageCaptured.setImageBitmap(bitmap);
-
+                                if (imgFile.exists()) {
+                                    Uri imageUri = Uri.fromFile(imgFile);
+                                    tempImages.add(new DataImage("",imageUri, true));
+                                }
                             }
+
+                            imageAdapter.addAllImages(tempImages);
+
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                         try {
-                            File audioFile = new File(data.get(0).audio);
+                            File audioFile = new File(data.get(0).audio.get(0));
 
                             if (audioFile.exists()) {
                                 Log.e("Set_Audio_File:", ""+audioFile);
@@ -267,7 +271,7 @@ public class CreateDataActivity extends AppCompatActivity {
 
             });
 
-        }*/
+        }
 
         mImageCaptured.setOnClickListener(v -> {
             //if system os is >= marshmallow, request runtime permission
@@ -405,7 +409,7 @@ public class CreateDataActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            DataImage dataImage = new DataImage("", image_uri);
+            DataImage dataImage = new DataImage("", image_uri, false);
             imageAdapter.addData(dataImage);
         }
 

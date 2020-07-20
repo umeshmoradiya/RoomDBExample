@@ -59,7 +59,27 @@ public class DataRepository {
 
 
     public List<DataModel> getDataById(int dataId) {
-        return mDataDao.loadAllByIds(new int[]{dataId});
+        List<DataModel> data = mDataDao.loadAllByIds(new int[]{dataId});
+
+        for(DataModel dataModel: data){
+            List<AttachmentModel> attachmentModels = getAttachmentDataById(dataModel.dataid);
+            for(AttachmentModel attachmentModel: attachmentModels){
+                Log.e("Image File Path:", "" + attachmentModel.type +"" + attachmentModel.source);
+                if("image".equals(attachmentModel.type)) {
+                    if(dataModel.image == null)
+                        dataModel.image = new ArrayList<>();
+
+                    dataModel.image.add(attachmentModel.source);
+                }
+                else {
+                    if(dataModel.audio == null)
+                        dataModel.audio = new ArrayList<>();
+
+                    dataModel.audio.add(attachmentModel.source);
+                }
+            }
+        }
+        return data;
     }
 
     public List<AttachmentModel> getAttachmentDataById(int dataModelId) {

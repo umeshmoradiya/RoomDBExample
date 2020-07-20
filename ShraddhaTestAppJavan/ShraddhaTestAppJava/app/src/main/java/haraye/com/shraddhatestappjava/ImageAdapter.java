@@ -59,9 +59,9 @@ public class ImageAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-    public void addAllImages(List<DataImage> dataImages){
+    public void addAllImages(List<DataImage> dataImagess){
         dataImages = new ArrayList<>();
-        dataImages.addAll(dataImages);
+        dataImages.addAll(dataImagess);
         notifyDataSetChanged();
     }
 }
