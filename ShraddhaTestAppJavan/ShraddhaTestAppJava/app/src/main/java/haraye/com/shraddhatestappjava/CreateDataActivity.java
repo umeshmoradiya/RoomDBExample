@@ -17,7 +17,9 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -40,6 +42,7 @@ import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import haraye.com.shraddhatestappjava.model.AttachmentModel;
+import haraye.com.shraddhatestappjava.model.DataImage;
 import haraye.com.shraddhatestappjava.model.DataModel;
 import haraye.com.shraddhatestappjava.repository.DataRepository;
 
@@ -61,13 +64,15 @@ public class CreateDataActivity extends AppCompatActivity {
     private AppCompatEditText mEditDescription;
     private ImageView mImageCaptured;
     private  ImageView mAudioRecorder;
+    private GridView imageGridView;
 
     boolean isPressed=false;
 
-    //Uri image_uri;
+    Uri image_uri;
     List<Uri> image_uris;
     DataModel dataModel;
     AttachmentModel attachmentModel;
+    ImageAdapter imageAdapter = null;
 
     private OPERATION curerntOperation = OPERATION.CREATE;
 
@@ -98,6 +103,7 @@ public class CreateDataActivity extends AppCompatActivity {
         mButtonStop = (Button) findViewById(R.id.btn_stop_record_audio);
         mButtonPlayLastRecordAudio = (Button) findViewById(R.id.btn_start_play_audio);
         mButtonStopPlayingRecording = (Button)findViewById(R.id.btn_stop_play_audio);
+        imageGridView = (GridView)findViewById(R.id.grid_create_data);
 
         mButtonStart.setEnabled(false);
         mButtonStop.setEnabled(false);
@@ -106,6 +112,9 @@ public class CreateDataActivity extends AppCompatActivity {
 
         random = new Random();
         mAudioRecorder = findViewById(R.id.img_create_audio);
+
+        imageAdapter = new ImageAdapter(this);
+        imageGridView.setAdapter(imageAdapter);
 
         mAudioRecorder.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -362,6 +371,7 @@ public class CreateDataActivity extends AppCompatActivity {
         values.put(MediaStore.Images.Media.DESCRIPTION, "From the Camera");
         Uri image_uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
         Log.e("Image Path:", "" + image_uri);
+        this.image_uri = image_uri;
         if (image_uris == null)
             image_uris = new ArrayList<>();
         image_uris.add(image_uri);
@@ -395,7 +405,8 @@ public class CreateDataActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            //mImageCaptured.setImageURI(image_uri);
+            DataImage dataImage = new DataImage("", image_uri);
+            imageAdapter.addData(dataImage);
         }
 
     }
