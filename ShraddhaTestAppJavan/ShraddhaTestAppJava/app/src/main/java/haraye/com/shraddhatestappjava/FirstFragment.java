@@ -53,14 +53,16 @@ public class FirstFragment extends Fragment {
             @Override
             public void onAudioClick(DataModel data) {
                 try {
-                    String audio = data.audio.get(0);
-                    Log.e("Audio string:", ""+audio);
-                    if(audio != null){
-                    Uri uri = Uri.parse(audio);
-                        mediaPlayer = new MediaPlayer();
-                        mediaPlayer.setDataSource(getContext(), uri);
-                        mediaPlayer.prepare();
-                        mediaPlayer.start();
+                    if(data.audio != null && !data.audio.isEmpty()) {
+                        String audio = data.audio.get(data.audio.size()-1);
+                        Log.e("Audio string:", "" + audio);
+                        if (audio != null) {
+                            Uri uri = Uri.parse(audio);
+                            mediaPlayer = new MediaPlayer();
+                            mediaPlayer.setDataSource(getContext(), uri);
+                            mediaPlayer.prepare();
+                            mediaPlayer.start();
+                        }
                     }
                 }
                 catch (Exception e){

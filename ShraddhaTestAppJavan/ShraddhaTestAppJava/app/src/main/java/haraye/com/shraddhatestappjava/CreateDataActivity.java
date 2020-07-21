@@ -360,12 +360,14 @@ public class CreateDataActivity extends AppCompatActivity {
                         }
                     }
 
-                    /*AttachmentModel attachmentModel1 = new AttachmentModel();
-                    attachmentModel1.source = audioPath;
-                    attachmentModel1.type = "audio";
-                    attachmentModel1.data_model_id = id;
-                    viewModel.insert(attachmentModel1);*/
-
+                    if(AudioSavePathInDevice != null) {
+                        String audioPath = AudioSavePathInDevice;
+                        AttachmentModel attachmentModel1 = new AttachmentModel();
+                        attachmentModel1.source = audioPath;
+                        attachmentModel1.type = "audio";
+                        attachmentModel1.data_model_id = dataModel.dataid;
+                        viewModel.insert(attachmentModel1);
+                    }
                     viewModel.update(dataModel);
                     finish();
                 }
